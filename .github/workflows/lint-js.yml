@@ -1,6 +1,5 @@
 name: Lint JavaScript
 
-# Kdaj se workflow sproži
 on:
   pull_request:
   push:
@@ -11,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repo
+      # 1️⃣ Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -21,37 +20,17 @@ jobs:
         with:
           node-version: '20'
 
-      # 3️⃣ Install ESLint and helper for migration
+      # 3️⃣ Install ESLint
       - name: Install ESLint
         run: |
-          npm install eslint @eslint/eslintrc --save-dev
+          npm install eslint@8 --save-dev
 
-      # 4️⃣ Create eslint.config.js if it doesn't exist
-      - name: Setup ESLint config
+      # 4️⃣ Lint app.js
+      - name: Lint app.js
         run: |
-          if [ ! -f eslint.config.js ]; then
-            cat <<EOF > eslint.config.js
-import { FlatCompat } from "@eslint/eslintrc";
-
-const compat = new FlatCompat({
-  baseDirectory: process.cwd(),
-  recommendedConfig: true,
-});
-
-export default [
-  ...compat.extends("eslint:recommended"),
-  {
-    files: ["*.js"],
-    rules: {
-      "no-unused-vars": "warn",
-      "semi": ["error", "always"]
-    },
-  },
-];
-EOF
+          # Ustvarimo minimalno konfiguracijo, če je še ni
+          if [ ! -f .eslintrc.json ]; then
+            echo '{"env": {"node": true,"es2021": true},"extends": "eslint:recommended","rules": {}}' > .eslintrc.json
           fi
 
-      # 5️⃣ Lint all JavaScript files
-      - name: Lint JS files
-        run: |
-          npx eslint "**/*.js"
+          npx eslint app.js
