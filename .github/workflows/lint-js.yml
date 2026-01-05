@@ -1,6 +1,6 @@
 name: Lint JavaScript
 
-# Ko se workflow sproži:
+# Ko se workflow sproži
 on:
   pull_request:
   push:
@@ -21,19 +21,38 @@ jobs:
         with:
           node-version: '20'
 
-      # 3️⃣ Namesti ESLint
-      - name: Install dependencies
+      # 3️⃣ Install ESLint and migration helper
+      - name: Install ESLint
         run: |
-          npm install eslint --save-dev
+          npm install eslint @eslint/eslintrc --save-dev
 
-      # 4️⃣ Ustvari osnovni ESLint config (če ga še nimaš)
+      # 4️⃣ Create eslint.config.js if it doesn't exist
       - name: Setup ESLint config
         run: |
-          if [ ! -f .eslintrc.json ]; then
-            npx eslint --init --yes
+          if [ ! -f eslint.config.js ]; then
+            cat << 'EOF' > eslint.config.js
+            import { FlatCompat } from "@eslint/eslintrc";
+
+            const compat = new FlatCompat({
+              baseDirectory: process.cwd(),
+              recommendedConfig: true,
+            });
+
+            export default [
+              ...compat.extends("eslint:recommended"),
+              {
+                files: ["*.js"],
+                rules: {
+                  // customize your rules here
+                  "no-unused-vars": "warn",
+                  "semi": ["error", "always"]
+                },
+              },
+            ];
+            EOF
           fi
 
-      # 5️⃣ Pogoji: Lintaj app.js
+      # 5️⃣ Lint app.js
       - name: Lint app.js
         run: |
           npx eslint app.js
