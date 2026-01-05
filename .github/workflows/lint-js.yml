@@ -1,6 +1,6 @@
 name: Lint JavaScript
 
-# Ko se workflow sproži
+# Kdaj se workflow sproži
 on:
   pull_request:
   push:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20'
 
-      # 3️⃣ Install ESLint and migration helper
+      # 3️⃣ Install ESLint and helper for migration
       - name: Install ESLint
         run: |
           npm install eslint @eslint/eslintrc --save-dev
@@ -30,29 +30,28 @@ jobs:
       - name: Setup ESLint config
         run: |
           if [ ! -f eslint.config.js ]; then
-            cat << 'EOF' > eslint.config.js
-            import { FlatCompat } from "@eslint/eslintrc";
+            cat <<EOF > eslint.config.js
+import { FlatCompat } from "@eslint/eslintrc";
 
-            const compat = new FlatCompat({
-              baseDirectory: process.cwd(),
-              recommendedConfig: true,
-            });
+const compat = new FlatCompat({
+  baseDirectory: process.cwd(),
+  recommendedConfig: true,
+});
 
-            export default [
-              ...compat.extends("eslint:recommended"),
-              {
-                files: ["*.js"],
-                rules: {
-                  // customize your rules here
-                  "no-unused-vars": "warn",
-                  "semi": ["error", "always"]
-                },
-              },
-            ];
-            EOF
+export default [
+  ...compat.extends("eslint:recommended"),
+  {
+    files: ["*.js"],
+    rules: {
+      "no-unused-vars": "warn",
+      "semi": ["error", "always"]
+    },
+  },
+];
+EOF
           fi
 
-      # 5️⃣ Lint app.js
-      - name: Lint app.js
+      # 5️⃣ Lint all JavaScript files
+      - name: Lint JS files
         run: |
-          npx eslint app.js
+          npx eslint "**/*.js"
