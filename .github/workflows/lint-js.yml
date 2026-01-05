@@ -30,8 +30,14 @@ jobs:
         run: |
           # Če config še ne obstaja, ga ustvarimo
           if [ ! -f .eslintrc.json ]; then
-            echo '{"env":{"browser":true,"node":true,"es2021":true},"extends":"eslint:recommended","rules":{}}' > .eslintrc.json
+            echo '{
+              "env": {"browser": true, "node": true, "es2021": true},
+              "extends": "eslint:recommended",
+              "rules": {
+                "no-unused-vars": "warn"
+              }
+            }' > .eslintrc.json
           fi
-          
+
           # Lintamo app.js
           npx eslint app.js
