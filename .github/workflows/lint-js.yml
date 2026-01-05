@@ -1,0 +1,39 @@
+name: Lint JavaScript
+
+# Ko se workflow sproži:
+on:
+  pull_request:
+  push:
+    branches: ["master"]
+
+jobs:
+  lint-js:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout repo
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3️⃣ Namesti ESLint
+      - name: Install dependencies
+        run: |
+          npm install eslint --save-dev
+
+      # 4️⃣ Ustvari osnovni ESLint config (če ga še nimaš)
+      - name: Setup ESLint config
+        run: |
+          if [ ! -f .eslintrc.json ]; then
+            npx eslint --init --yes
+          fi
+
+      # 5️⃣ Pogoji: Lintaj app.js
+      - name: Lint app.js
+        run: |
+          npx eslint app.js

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="sl">
+<head>
+    <meta charset="UTF-8">
+    <title>API Demo</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+    <header>
+        <h1>Hello World!</h1>
+    </header>
+
+    <main>
+        <div class="section">
+            <div id="change-content" class="box">
+                Zamenjaj vsebino: Moja prva spletna stran
+            </div>
+
+            <p id="main-text">Moja prva stran.</p>
+        </div>
+
+        <div class="section">
+            <div id="fetch-users" class="box">
+                Izpis imen in mailov uporabnikov iz API-ja
+            </div>
+
+            <h1>Uporabniki</h1>
+            <ul id="user-list"></ul>
+        </div>
+
+        <div class="section">
+            <h2>Izberi sliko:</h2>
+
+            <div>
+                <div id="show-sea" class="box">Morje</div>
+                <div id="show-mountains" class="box">Gora</div>
+            </div>
+
+            <div id="image-container">
+                <img id="sea-img" src="images/morje.jpg" alt="Morje">
+                <img id="mountain-img" src="images/gora.jpg" alt="Gore">
+            </div>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        // Zamenjava vsebine besedila
+        document
+            .getElementById("change-content")
+            .addEventListener("click", () => {
+                document.getElementById("main-text").textContent =
+                    "Vsebina zamenjana.";
+            });
+
+        // API
+        document
+            .getElementById("fetch-users")
+            .addEventListener("click", main);
+
+        // Slike
+        const seaImg = document.getElementById("sea-img");
+        const mountainImg = document.getElementById("mountain-img");
+
+        document.getElementById("show-sea").addEventListener("click", () => {
+            seaImg.style.display = "block";
+            mountainImg.style.display = "none";
+        });
+
+        document.getElementById("show-mountains").addEventListener("click", () => {
+            mountainImg.style.display = "block";
+            seaImg.style.display = "none";
+        });
+    </script>
+</body>
+</html>
